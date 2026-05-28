@@ -1,0 +1,23 @@
+name: Build DLL
+
+on: [push, workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v2
+
+    - name: Build the Solution
+      run: msbuild gameinput2xinput.sln /p:Configuration=Release /p:Platform=x64
+
+    - name: Upload the DLL
+      uses: actions/upload-artifact@v4
+      with:
+        name: gameinput-dll
+        path: x64/Release/gameinput2xinput.dll
