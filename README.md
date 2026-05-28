@@ -1,3 +1,8 @@
+VERY IMPORTANT!!! MUST READ
+Everything that isn't from andrew-ld, it's made purely with AI. It's not a lot of code in reality, probably a hundred of lines, but this fixed vibration on KCD2, using this dll.
+
+readme is work in progress
+
 # gameinput2xinput
 This library partially reimplements gameinput using xinput.
 
@@ -6,5 +11,4 @@ This library partially reimplements gameinput using xinput.
 - add the following launch option to the game's properties: `WINEDLLOVERRIDES="gameinput=n,b" %command%`
 
 # Tested games
-- Stalker 2
-- Kingdom Come: Deliverance II
+- Kingdom Come: Deliverance II (FIXED VIBRATION ON LINUX)
