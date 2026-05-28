@@ -123,8 +123,8 @@ public:
 	
 	    // CRITICAL: KCD2 requires these exact flags
 	    dev_info.capabilities = GameInputDeviceCapabilityWireless; // NOT PowerOff
-	    dev_info.vendorId = 0x045E;
-	    dev_info.productId = 0x02D1; // Keep your original ID
+	    dev_info.vendorId = 0x45e;
+	    dev_info.productId = 0x28e; // Keep your original ID
 	    dev_info.deviceFamily = GameInputFamilyXboxOne;
 	    dev_info.usage.id = 5;
 	    dev_info.usage.page = 1;
@@ -165,10 +165,10 @@ public:
 	    return &dev_info;
 	}
 
-	GameInputDeviceStatus GetDeviceStatus() noexcept override
+		GameInputDeviceStatus GetDeviceStatus() noexcept override
 	{
-		LOG_FUNCTION_CALL;
-		return GameInputDeviceStatus();
+	    LOG_FUNCTION_CALL;
+	    return GameInputDeviceConnected; // WAS: GameInputDeviceStatus() which equals 0
 	}
 
 	void GetBatteryState(GameInputBatteryState* state) noexcept override
@@ -200,26 +200,29 @@ public:
 	}
 
 	void SetRumbleState(const GameInputRumbleParams* params) noexcept override
-	{
-		LOG_FUNCTION_CALL;
+{
+    LOG_FUNCTION_CALL;
+    XINPUT_VIBRATION vibration = {}; // Zero-init guarantees rumble STOPS when params is null
 
-		XINPUT_VIBRATION vibration = {
-			params != nullptr ? static_cast<WORD>(min(65535U, static_cast<UINT>(min(max(params->leftTrigger + params->lowFrequency,  0.0f), 1.0f) * 65536.0f))) : 0ui16,
-			params != nullptr ? static_cast<WORD>(min(65535U, static_cast<UINT>(min(max(params->rightTrigger + params->highFrequency, 0.0f), 1.0f) * 65536.0f))) : 0ui16
-		};
+    if (params != nullptr)
+    {
+        float leftTotal  = params->lowFrequency + params->leftTrigger;
+        float rightTotal = params->highFrequency + params->rightTrigger;
 
-		auto xinputSlot = _deviceState->xinputSlot;
+        // Safe clamp without windows.h macro corruption
+        auto clamp = [](float v) { return v < 0.0f ? 0.0f : (v > 1.0f ? 1.0f : v); };
+        leftTotal  = clamp(leftTotal);
+        rightTotal = clamp(rightTotal);
 
-		if (xinputSlot != -1)
-		{
-			auto result = XInputSetState(xinputSlot, &vibration);
+        vibration.wLeftMotorSpeed  = static_cast<WORD>(leftTotal  * 65535.0f);
+        vibration.wRightMotorSpeed = static_cast<WORD>(rightTotal * 65535.0f);
+    }
 
-			if (result != ERROR_SUCCESS)
-			{
-				LOG(AixLog::Severity::error) << "xinput set state error: " << result << " slot: " << xinputSlot << std::endl;
-			}
-		}
-	}
+    if (_deviceState->xinputSlot != -1)
+    {
+        XInputSetState(_deviceState->xinputSlot, &vibration);
+    }
+}
 
 	void SetInputSynchronizationState(bool enabled) noexcept override
 	{
