@@ -1,5 +1,5 @@
 VERY IMPORTANT!!! MUST READ
-Everything that isn't from andrew-ld, it's made purely with AI. It's not a lot of code in reality, probably a hundred of lines, but this fixed vibration on KCD2, using this dll.
+Everything that isn't from andrew-ld, it's made purely with AI.
 
 readme is work in progress
 
