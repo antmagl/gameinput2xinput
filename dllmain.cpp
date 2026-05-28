@@ -124,7 +124,7 @@ public:
 
 		dev_info.capabilities = GameInputDeviceCapabilityPowerOff | GameInputDeviceCapabilityWireless;
 
-		dev_info.vendorId = 0x45E;
+		dev_info.vendorId = 0x045E;
 		dev_info.productId = 0x0B13;
 
 		dev_info.deviceFamily = GameInputFamilyXboxOne;
