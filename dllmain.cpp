@@ -1,3 +1,4 @@
+#define NOMINMAX // Prevents windows.h from breaking min/max
 // dllmain.cpp : Defines the entry point for the DLL application.
 #include "pch.h"
 #include "gameinput.h"
@@ -108,35 +109,60 @@ public:
 
 	// https://github.com/SpecialKO/SpecialK/blob/3efff581925870736e07247aea4c370f889787a4/src/input/game_input.cpp#L876
 	// GNU General Public License 3
-	const GameInputDeviceInfo* GetDeviceInfo() noexcept override
+		const GameInputDeviceInfo* GetDeviceInfo() noexcept override
 	{
-		LOG_FUNCTION_CALL;
-
-		static GameInputDeviceInfo dev_info = {};
-
-		dev_info.infoSize = sizeof(GameInputDeviceInfo);
-
-		dev_info.controllerAxisCount = 6;
-		dev_info.controllerButtonCount = 13;
-
-		dev_info.deviceId = { 1 };
-		dev_info.deviceRootId = { 1 };
-
-		dev_info.capabilities = GameInputDeviceCapabilityPowerOff | GameInputDeviceCapabilityWireless;
-
-		dev_info.vendorId = 0x045E;
-		dev_info.productId = 0x0B13;
-
-		dev_info.deviceFamily = GameInputFamilyXboxOne;
-		dev_info.usage.id = 5;
-		dev_info.usage.page = 1;
-
-		dev_info.interfaceNumber = 0;
-
-		dev_info.supportedInput = GameInputKindControllerAxis | GameInputKindControllerButton | GameInputKindGamepad | GameInputKindUiNavigation;
-		dev_info.supportedRumbleMotors = GameInputRumbleLowFrequency | GameInputRumbleHighFrequency;
-
-		return &dev_info;
+	    LOG_FUNCTION_CALL;
+	    static GameInputDeviceInfo dev_info = {};
+	    if (dev_info.infoSize != 0) return &dev_info; // Prevent re-init
+	
+	    dev_info.infoSize = sizeof(GameInputDeviceInfo);
+	    dev_info.controllerAxisCount = 6;
+	    dev_info.controllerButtonCount = 14; // Xbox layout
+	    dev_info.deviceId = { 1 };
+	    dev_info.deviceRootId = { 1 };
+	
+	    // CRITICAL: KCD2 requires these exact flags
+	    dev_info.capabilities = GameInputDeviceCapabilityWireless; // NOT PowerOff
+	    dev_info.vendorId = 0x045E;
+	    dev_info.productId = 0x02D1; // Keep your original ID
+	    dev_info.deviceFamily = GameInputFamilyXboxOne;
+	    dev_info.usage.id = 5;
+	    dev_info.usage.page = 1;
+	    dev_info.interfaceNumber = 0;
+	    dev_info.hardwareVersion.major = 1;
+	    dev_info.hardwareVersion.minor = 0;
+	    dev_info.firmwareVersion.major = 0;
+	    dev_info.firmwareVersion.minor = 0;
+	
+	    dev_info.supportedInput = GameInputKindControllerAxis | GameInputKindControllerButton | GameInputKindGamepad | GameInputKindUiNavigation;
+	    dev_info.supportedRumbleMotors = GameInputRumbleLowFrequency | GameInputRumbleHighFrequency | GameInputRumbleLeftTrigger | GameInputRumbleRightTrigger;
+	
+	    // CRITICAL: KCD2 skips rumble init if these pointers are null
+	    static GameInputGamepadInfo gamepadInfo = {
+	        GameInputLabelXboxStart, GameInputLabelXboxBack,
+	        GameInputLabelXboxA, GameInputLabelXboxB,
+	        GameInputLabelXboxX, GameInputLabelXboxY,
+	        GameInputLabelXboxDPadUp, GameInputLabelXboxDPadDown,
+	        GameInputLabelXboxDPadLeft, GameInputLabelXboxDPadRight,
+	        GameInputLabelXboxLeftShoulder, GameInputLabelXboxRightShoulder,
+	        GameInputLabelXboxLeftStickButton, GameInputLabelXboxRightStickButton
+	    };
+	    dev_info.gamepadInfo = &gamepadInfo;
+	
+	    static GameInputUiNavigationInfo uiNavigationInfo = {
+	        GameInputLabelXboxStart, GameInputLabelXboxBack,
+	        GameInputLabelXboxA, GameInputLabelXboxB,
+	        GameInputLabelXboxDPadUp, GameInputLabelXboxDPadDown,
+	        GameInputLabelXboxDPadLeft, GameInputLabelXboxDPadRight,
+	        GameInputLabelXboxX, GameInputLabelXboxY,
+	        GameInputLabelXboxLeftStickButton, GameInputLabelXboxRightStickButton,
+	        GameInputLabelXboxLeftTrigger, GameInputLabelXboxRightTrigger,
+	        GameInputLabelXboxLeftShoulder, GameInputLabelXboxRightShoulder,
+	        (GameInputLabel)-1, (GameInputLabel)-1, (GameInputLabel)-1, (GameInputLabel)-1, (GameInputLabel)-1
+	    };
+	    dev_info.uiNavigationInfo = &uiNavigationInfo;
+	
+	    return &dev_info;
 	}
 
 	GameInputDeviceStatus GetDeviceStatus() noexcept override
