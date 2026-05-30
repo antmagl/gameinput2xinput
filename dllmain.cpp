@@ -1,4 +1,7 @@
 // dllmain.cpp : Defines the entry point for the DLL application.
+
+#define NOMINMAX // Prevents windows.h from breaking min/max
+
 #include "pch.h"
 #include "gameinput.h"
 #include "aixlog.hpp"
@@ -177,10 +180,21 @@ public:
 	{
 		LOG_FUNCTION_CALL;
 
-		XINPUT_VIBRATION vibration = {
-			params != nullptr ? static_cast<WORD>(min(65535U, static_cast<UINT>(min(max(params->leftTrigger + params->lowFrequency,  0.0f), 1.0f) * 65536.0f))) : 0ui16,
-			params != nullptr ? static_cast<WORD>(min(65535U, static_cast<UINT>(min(max(params->rightTrigger + params->highFrequency, 0.0f), 1.0f) * 65536.0f))) : 0ui16
-		};
+		XINPUT_VIBRATION vibration = {}
+
+
+		if (params != nullptr)
+		{
+			float leftTotal  = params->lowFrequency + params->leftTrigger;
+			float rightTotal = params->highFrequency + params->rightTrigger;
+
+			auto clamp = [](float v) { return v < 0.0f ? 0.0f : (v > 1.0f ? 1.0f : v); };
+			leftTotal  = clamp(leftTotal);
+			rightTotal = clamp(rightTotal);
+
+			vibration.wLeftMotorSpeed  = static_cast<WORD>(leftTotal  * 65535.0f);
+			vibration.wRightMotorSpeed = static_cast<WORD>(rightTotal * 65535.0f);
+		}
 
 		auto xinputSlot = _deviceState->xinputSlot;
 
