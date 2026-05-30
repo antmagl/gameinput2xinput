@@ -1,4 +1,5 @@
 VERY IMPORTANT!!! MUST READ
+
 DISCLAIMER 
 I'm not responsible for any damages, bugs or crashes dealt to your devices. Use this dll at your own risk.
 
@@ -21,5 +22,5 @@ This library partially reimplements gameinput using xinput. My fork fixes vibrat
 
 This patch has been possible thanks to this repo: https://github.com/Tivian/KCD2_WirelessVibration
 
-* Many thanks to @Tivian and whoever helped to find the game's vibration bug.
+* Many thanks to @Tivian and obviously @andrew-ld.
 
