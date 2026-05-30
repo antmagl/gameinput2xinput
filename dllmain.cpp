@@ -145,7 +145,7 @@ public:
 	GameInputDeviceStatus GetDeviceStatus() noexcept override
 	{
 		LOG_FUNCTION_CALL;
-		return GameInputDeviceStatus();
+		return GameInputDeviceConnected;
 	}
 
 	void GetBatteryState(GameInputBatteryState* state) noexcept override
