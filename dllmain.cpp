@@ -109,35 +109,73 @@ public:
 		return 0;
 	}
 
-	// https://github.com/SpecialKO/SpecialK/blob/3efff581925870736e07247aea4c370f889787a4/src/input/game_input.cpp#L876
-	// GNU General Public License 3
 	const GameInputDeviceInfo* GetDeviceInfo() noexcept override
 	{
 		LOG_FUNCTION_CALL;
 
-		static GameInputDeviceInfo dev_info = {};
+		static const GameInputDeviceInfo dev_info = [] {
+			GameInputDeviceInfo info = {};
 
-		dev_info.infoSize = sizeof(GameInputDeviceInfo);
+			info.infoSize = sizeof(GameInputDeviceInfo);
+			info.controllerAxisCount = 6;
+			info.controllerButtonCount = 14;
+			info.deviceId = { 1 };
+			info.deviceRootId = { 1 };
 
-		dev_info.controllerAxisCount = 6;
-		dev_info.controllerButtonCount = 13;
+			info.capabilities = GameInputDeviceCapabilityWireless;
+			info.vendorId = 0x45e;
+			info.productId = 0x28e;
+			info.deviceFamily = GameInputFamilyXboxOne;
+			info.usage.id = 5;
+			info.usage.page = 1;
+			info.interfaceNumber = 0;
 
-		dev_info.deviceId = { 1 };
-		dev_info.deviceRootId = { 1 };
+			info.hardwareVersion.major = 1;
+			info.hardwareVersion.minor = 0;
+			info.firmwareVersion.major = 0;
+			info.firmwareVersion.minor = 0;
 
-		dev_info.capabilities = GameInputDeviceCapabilityPowerOff | GameInputDeviceCapabilityWireless;
+			info.supportedInput =
+				GameInputKindControllerAxis |
+				GameInputKindControllerButton |
+				GameInputKindGamepad |
+				GameInputKindUiNavigation;
 
-		dev_info.vendorId = 0x45e;
-		dev_info.productId = 0x28e;
+			info.supportedRumbleMotors =
+				GameInputRumbleLowFrequency |
+				GameInputRumbleHighFrequency |
+				GameInputRumbleLeftTrigger |
+				GameInputRumbleRightTrigger;
 
-		dev_info.deviceFamily = GameInputFamilyXbox360;
-		dev_info.usage.id = 5;
-		dev_info.usage.page = 1;
+			static const GameInputGamepadInfo gamepadInfo = {
+				GameInputLabelXboxStart, GameInputLabelXboxBack,
+				GameInputLabelXboxA, GameInputLabelXboxB,
+				GameInputLabelXboxX, GameInputLabelXboxY,
+				GameInputLabelXboxDPadUp, GameInputLabelXboxDPadDown,
+				GameInputLabelXboxDPadLeft, GameInputLabelXboxDPadRight,
+				GameInputLabelXboxLeftShoulder, GameInputLabelXboxRightShoulder,
+				GameInputLabelXboxLeftStickButton, GameInputLabelXboxRightStickButton
+			};
 
-		dev_info.interfaceNumber = 0;
+			static const GameInputUiNavigationInfo uiNavigationInfo = {
+				GameInputLabelXboxStart, GameInputLabelXboxBack,
+				GameInputLabelXboxA, GameInputLabelXboxB,
+				GameInputLabelXboxDPadUp, GameInputLabelXboxDPadDown,
+				GameInputLabelXboxDPadLeft, GameInputLabelXboxDPadRight,
+				GameInputLabelXboxX, GameInputLabelXboxY,
+				GameInputLabelXboxLeftStickButton, GameInputLabelXboxRightStickButton,
+				GameInputLabelXboxLeftTrigger, GameInputLabelXboxRightTrigger,
+				GameInputLabelXboxLeftShoulder, GameInputLabelXboxRightShoulder,
+				GameInputLabelUnknown, GameInputLabelUnknown,
+				GameInputLabelUnknown, GameInputLabelUnknown,
+				GameInputLabelUnknown
+			};
 
-		dev_info.supportedInput = GameInputKindControllerAxis | GameInputKindControllerButton | GameInputKindGamepad | GameInputKindUiNavigation;
-		dev_info.supportedRumbleMotors = GameInputRumbleLowFrequency | GameInputRumbleHighFrequency;
+			info.gamepadInfo = &gamepadInfo;
+			info.uiNavigationInfo = &uiNavigationInfo;
+
+			return info;
+		}();
 
 		return &dev_info;
 	}
