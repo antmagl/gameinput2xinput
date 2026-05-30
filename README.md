@@ -1,11 +1,11 @@
 VERY IMPORTANT!!! MUST READ
 
 DISCLAIMER 
-I'm not responsible for any damages, bugs or crashes dealt to your devices. Use this dll at your own risk.
+I'm not responsible for any damages, bugs or crashes dealt to your devices. Use this dll at your own risk. 
 
 Everything that isn't from andrew-ld, it's made purely with AI.
 
-Qwen understood the vibration functioning of the game using this repo https://github.com/Tivian/KCD2_WirelessVibration. AI gathered the right information and put a fix in the dllmain.cpp. 
+Qwen understood the vibration functioning of the game using this repo https://github.com/Tivian/KCD2_WirelessVibration. AI gathered the right information and put a fix in the dllmain.cpp. Check commits for info.
 
 # gameinput2xinput
 This library partially reimplements gameinput using xinput. My fork fixes vibration specifically on KCD2
