@@ -218,8 +218,7 @@ public:
 	{
 		LOG_FUNCTION_CALL;
 
-		XINPUT_VIBRATION vibration = {}
-
+		XINPUT_VIBRATION vibration = {};
 
 		if (params != nullptr)
 		{
