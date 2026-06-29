@@ -1,3 +1,7 @@
+# MERGED UPSTREAM, NO NEED TO USE MY FORK
+This repository is no longer maintained because the changes have been successfully merged into the official repository.
+https://github.com/andrew-ld/gameinput2xinput
+
 VERY IMPORTANT!!! MUST READ
 
 DISCLAIMER 
